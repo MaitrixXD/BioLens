@@ -171,6 +171,11 @@ export default function Dashboard() {
 
   return (
     <div id="dashboard-export-root" style={{ maxWidth: '1440px', margin: '0 auto', paddingBottom: '4rem' }}>
+      {/* Explicit Print Header (only visible in PDFs) */}
+      <div className="print-header">
+        <h1>{profileName ? `${profileName} - Traelth Report` : 'Traelth Report'}</h1>
+      </div>
+
 
       {/* Floating action bar */}
       <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
@@ -1237,7 +1242,7 @@ export default function Dashboard() {
       <div className="no-print" style={{ display: 'flex', justifyContent: 'center', margin: '3rem 0 2rem' }}>
         <button
           onClick={() => {
-            document.title = profileName ? `${profileName} – BioLens Report` : 'BioLens Report';
+            document.title = profileName ? `${profileName} – Traelth Report` : 'Traelth Report';
             window.print();
           }}
           style={{
@@ -1261,6 +1266,7 @@ export default function Dashboard() {
         <ShieldAlert size={16} style={{ display: 'inline', verticalAlign: 'text-bottom', marginRight: '0.5rem' }} />
         This analysis is an algorithmic estimate based on biometric trends. It is intended for informational purposes only and is not a medical diagnosis.
       </div>
+      <div className="print-footer">Traelth</div>
     </div>
   );
 }

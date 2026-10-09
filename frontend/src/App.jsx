@@ -45,7 +45,7 @@ function NavBar() {
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         <Activity color="var(--accent-cyan)" size={32} />
-        <h1 className="text-gradient" style={{ margin: 0, fontSize: '1.5rem' }}>BioLens</h1>
+        <h1 className="text-gradient" style={{ margin: 0, fontSize: '1.5rem' }}>Traelth</h1>
       </div>
 
       <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>

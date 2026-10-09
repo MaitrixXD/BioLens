@@ -270,7 +270,7 @@ export default function TestingPage() {
           <FlaskConical size={28} /> Testing Page
         </h2>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1rem' }}>
-          Upload a CSV dataset and run the BioLens model row-by-row to evaluate prediction accuracy.
+          Upload a CSV dataset and run the Traelth model row-by-row to evaluate prediction accuracy.
         </p>
       </div>
 
@@ -334,7 +334,7 @@ export default function TestingPage() {
           }}>
             <Info size={14} color="#22D3EE" style={{ flexShrink: 0, marginTop: '1px' }} />
             <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
-              Upload any CSV matching the BioLens schema. If ground-truth target columns are present the model will compute R² accuracy and MAE per domain.
+              Upload any CSV matching the Traelth schema. If ground-truth target columns are present the model will compute R² accuracy and MAE per domain.
             </p>
           </div>
 

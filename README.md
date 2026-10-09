@@ -1,10 +1,10 @@
-# BioLens
+# Traelth
 
-BioLens is an advanced personal health intelligence platform that synthesizes biometrics, training data, and clinical signals to provide deep physiological insights and forecasting.
+Traelth is an advanced personal health intelligence platform that synthesizes biometrics, training data, and clinical signals to provide deep physiological insights and forecasting.
 
 ## Architecture
 
-BioLens consists of two main components:
+Traelth consists of two main components:
 - **Frontend**: A React application built with Vite, utilizing modern glassmorphism design and `recharts` for rich data visualization.
 - **Backend**: A Python Flask REST API powered by machine learning (`scikit-learn`, `xgboost`, `shap`) to calculate trend metrics, predict physiological states, and provide actionable health recommendations.
 

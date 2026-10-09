@@ -74,7 +74,7 @@ export default function AuthPage() {
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
             <Activity color="#22D3EE" size={36} />
-            <h1 className="text-gradient" style={{ margin: 0, fontSize: '2rem' }}>BioLens</h1>
+            <h1 className="text-gradient" style={{ margin: 0, fontSize: '2rem' }}>Traelth</h1>
           </div>
           <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
             Your Personal AI Health Intelligence Platform

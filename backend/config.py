@@ -159,7 +159,7 @@ DOMAIN_FEATURE_GROUPS = {
     'readiness': [
         'hrv_rmssd_ms', 'resting_hr_bpm', 'sleep_duration_h',
         'deep_sleep_pct', 'rem_sleep_pct', 'training_load_7d_avg',
-        'autonomic_load_index', 'skin_temp_c', 'skin_temp_c_trend_per_week',
+        'autonomic_load_index', 'skin_temp_c', 'skin_temp_c_trendt_per_week',
     ],
 }
 

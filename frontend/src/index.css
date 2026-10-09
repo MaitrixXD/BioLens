@@ -202,8 +202,13 @@ h1, h2, h3, h4, h5, h6 {
   input[type="range"],
   input[type="number"],
   input[type="text"],
-  select {
+  select,
+  .print-header {
     display: none !important;
+  }
+
+  .print-footer {
+    display: none;
   }
 
   /* White background so the PDF isn't pitch black */
@@ -228,6 +233,40 @@ h1, h2, h3, h4, h5, h6 {
   .recharts-responsive-container {
     break-inside: avoid;
     page-break-inside: avoid;
+  }
+
+  /* Custom Print Footer & Header */
+  .print-footer {
+    display: block !important;
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #111827;
+    background: transparent;
+    padding: 10px 0;
+    z-index: 9999;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .print-header {
+    display: block !important;
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  .print-header h1 {
+    font-size: 2.5rem !important;
+    color: #111827;
+    margin: 0;
+  }
+  .print-header-hide {
+    display: none !important;
   }
 
   /* Utility class to prevent breaks */
