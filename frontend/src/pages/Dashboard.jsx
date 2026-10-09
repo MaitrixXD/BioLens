@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { 
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, 
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
   BarChart, Bar, Legend, PieChart, Pie, Cell, AreaChart, Area
 } from 'recharts';
 import { Activity, Brain, Moon, Heart, Dumbbell, Zap, ShieldAlert, FastForward, Sliders, Wind, ActivitySquare, FileText, Download } from 'lucide-react';
@@ -14,7 +14,7 @@ export default function Dashboard() {
   const [saveStatus, setSaveStatus] = useState(null);
   const hasSaved = useRef(false);
 
-  
+
   const [mods, setMods] = useState({
     sleep_duration_h: 0, weight_kg: 0, steps_per_day: 0, perceived_stress_score: 0
   });
@@ -29,7 +29,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (hasSaved.current || !profileName) return;
     hasSaved.current = true;
-    
+
     if (state.isUpdated) {
       setSaveStatus('updated');
       return;
@@ -62,7 +62,7 @@ export default function Dashboard() {
       if (currentMods.weight_kg !== 0) absoluteMods.weight_kg = data.weight_kg + currentMods.weight_kg;
       if (currentMods.steps_per_day !== 0) absoluteMods.steps_per_day = data.steps_per_day + currentMods.steps_per_day;
       if (currentMods.perceived_stress_score !== 0) absoluteMods.perceived_stress_score = data.perceived_stress_score + currentMods.perceived_stress_score;
-      
+
       if (Object.keys(absoluteMods).length === 0) {
         setScenarioData(null);
         return;
@@ -126,7 +126,7 @@ export default function Dashboard() {
         baseHrv = hrv7 * t + hrv0 * (1 - t);
         baseSteps = steps7 * t + steps0 * (1 - t);
       }
-      
+
       const noiseRhr = (Math.sin(i * 1.5) + Math.cos(i * 2.3)) * 4;
       const noiseHrv = (Math.sin(i * 2.1) + Math.cos(i * 1.1)) * 6;
       const noiseSteps = (Math.sin(i * 1.8) + Math.cos(i * 0.9)) * 1500;
@@ -171,11 +171,6 @@ export default function Dashboard() {
 
   return (
     <div id="dashboard-export-root" style={{ maxWidth: '1440px', margin: '0 auto', paddingBottom: '4rem' }}>
-      {/* Explicit Print Header (only visible in PDFs) */}
-      <div className="print-header">
-        <h1>{profileName ? `${profileName} - Traelth Report` : 'Traelth Report'}</h1>
-      </div>
-
 
       {/* Floating action bar */}
       <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
@@ -185,11 +180,11 @@ export default function Dashboard() {
               Candidate Name: <strong style={{ color: 'var(--text-primary)', fontSize: '2rem' }}>{profileName}</strong>
             </span>
           )}
-          {saveStatus === 'saving'    && <span style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', background: 'rgba(34,211,238,0.1)', padding: '0.2rem 0.6rem', borderRadius: '20px' }}>⏳ Saving...</span>}
-          {saveStatus === 'saved'     && <span style={{ fontSize: '0.8rem', color: '#10B981', background: 'rgba(16,185,129,0.1)', padding: '0.2rem 0.6rem', borderRadius: '20px' }}>✓ Already saved</span>}
-          {saveStatus === 'updated'   && <span style={{ fontSize: '0.8rem', color: '#3B82F6', background: 'rgba(59,130,246,0.1)', padding: '0.2rem 0.6rem', borderRadius: '20px' }}>✓ Update applied</span>}
+          {saveStatus === 'saving' && <span style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', background: 'rgba(34,211,238,0.1)', padding: '0.2rem 0.6rem', borderRadius: '20px' }}>⏳ Saving...</span>}
+          {saveStatus === 'saved' && <span style={{ fontSize: '0.8rem', color: '#10B981', background: 'rgba(16,185,129,0.1)', padding: '0.2rem 0.6rem', borderRadius: '20px' }}>✓ Already saved</span>}
+          {saveStatus === 'updated' && <span style={{ fontSize: '0.8rem', color: '#3B82F6', background: 'rgba(59,130,246,0.1)', padding: '0.2rem 0.6rem', borderRadius: '20px' }}>✓ Update applied</span>}
           {saveStatus === 'duplicate' && <span style={{ fontSize: '0.8rem', color: '#F59E0B', background: 'rgba(245,158,11,0.1)', padding: '0.2rem 0.6rem', borderRadius: '20px' }}>⚠ Already saved</span>}
-          {saveStatus === 'error'     && <span style={{ fontSize: '0.8rem', color: 'var(--accent-rose)', background: 'rgba(244,63,94,0.1)', padding: '0.2rem 0.6rem', borderRadius: '20px' }}>⚠ Save failed</span>}
+          {saveStatus === 'error' && <span style={{ fontSize: '0.8rem', color: 'var(--accent-rose)', background: 'rgba(244,63,94,0.1)', padding: '0.2rem 0.6rem', borderRadius: '20px' }}>⚠ Save failed</span>}
         </div>
       </div>
 
@@ -302,51 +297,51 @@ export default function Dashboard() {
               Key Metrics
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: '1.5rem', textAlign: 'left' }}>
-          {metrics.map((m) => (
-            <div
-              key={m.label}
-              style={{
-                background: m.bg,
-                border: `1px solid ${m.border}`,
-                borderRadius: '16px',
-                padding: '1.25rem 1rem',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '0.5rem',
-                position: 'relative',
-                overflow: 'hidden',
-                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                cursor: 'default',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${m.border}`; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
-            >
-              <div style={{ position: 'absolute', bottom: '-20px', right: '-20px', width: '80px', height: '80px', borderRadius: '50%', background: m.accent, opacity: 0.08, filter: 'blur(20px)', pointerEvents: 'none' }} />
-              <div style={{ color: m.accent, display: 'flex', alignItems: 'center' }}>{m.icon}</div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.3rem', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '2.2rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1 }}>{m.value}</span>
-                <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 600 }}>{m.unit}</span>
-              </div>
-              <div style={{ fontSize: '1.25rem', color: 'var(--text-primary)', fontWeight: 700, whiteSpace: 'normal', lineHeight: '1.2' }}>{m.label}</div>
-              <div style={{ fontSize: '0.72rem', fontWeight: 600, color: m.statusColor, background: `${m.statusColor}18`, borderRadius: '20px', padding: '0.15rem 0.5rem', alignSelf: 'flex-start', border: `1px solid ${m.statusColor}40` }}>
-                {m.status}
-              </div>
-              {m.avg30 && (
-                <div style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
-                  background: m.accent + '20',
-                  border: `1px solid ${m.accent}45`,
-                  borderRadius: '8px',
-                  padding: '0.25rem 0.6rem',
-                  marginTop: '0.25rem',
-                  alignSelf: 'flex-start',
-                }}>
-                  <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontWeight: 500, letterSpacing: '0.03em' }}>Ø 30d</span>
-                  <span style={{ fontSize: '0.82rem', color: m.accent, fontWeight: 700 }}>{m.avg30}</span>
+              {metrics.map((m) => (
+                <div
+                  key={m.label}
+                  style={{
+                    background: m.bg,
+                    border: `1px solid ${m.border}`,
+                    borderRadius: '16px',
+                    padding: '1.25rem 1rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.5rem',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                    cursor: 'default',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${m.border}`; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+                >
+                  <div style={{ position: 'absolute', bottom: '-20px', right: '-20px', width: '80px', height: '80px', borderRadius: '50%', background: m.accent, opacity: 0.08, filter: 'blur(20px)', pointerEvents: 'none' }} />
+                  <div style={{ color: m.accent, display: 'flex', alignItems: 'center' }}>{m.icon}</div>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.3rem', flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: '2.2rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1 }}>{m.value}</span>
+                    <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 600 }}>{m.unit}</span>
+                  </div>
+                  <div style={{ fontSize: '1.25rem', color: 'var(--text-primary)', fontWeight: 700, whiteSpace: 'normal', lineHeight: '1.2' }}>{m.label}</div>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 600, color: m.statusColor, background: `${m.statusColor}18`, borderRadius: '20px', padding: '0.15rem 0.5rem', alignSelf: 'flex-start', border: `1px solid ${m.statusColor}40` }}>
+                    {m.status}
+                  </div>
+                  {m.avg30 && (
+                    <div style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+                      background: m.accent + '20',
+                      border: `1px solid ${m.accent}45`,
+                      borderRadius: '8px',
+                      padding: '0.25rem 0.6rem',
+                      marginTop: '0.25rem',
+                      alignSelf: 'flex-start',
+                    }}>
+                      <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontWeight: 500, letterSpacing: '0.03em' }}>Ø 30d</span>
+                      <span style={{ fontSize: '0.82rem', color: m.accent, fontWeight: 700 }}>{m.avg30}</span>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          ))}
+              ))}
             </div>
           </div>
         );
@@ -357,19 +352,19 @@ export default function Dashboard() {
         <h3 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-cyan)', marginBottom: '1.25rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Ø 30-Day & Bio Averages</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '1rem' }}>
           {[
-            { label: 'Avg HR',    value: rawInputs.rhr_30d_avg != null ? `${Math.round(rawInputs.rhr_30d_avg)}` : '—', unit: 'bpm', color: '#F43F5E' },
-            { label: 'Avg HRV',  value: rawInputs.hrv_30d_avg != null ? `${Math.round(rawInputs.hrv_30d_avg)}` : '—', unit: 'ms', color: '#A855F7' },
-            { label: 'Avg VO₂',  value: rawInputs.vo2max_30d_avg != null ? `${Number(rawInputs.vo2max_30d_avg).toFixed(1)}` : rawInputs.vo2max_90d_ago != null ? `${Number(rawInputs.vo2max_90d_ago).toFixed(1)}` : '—', unit: 'ml/kg/min', color: '#3B82F6' },
-            { label: 'Avg Sleep',value: rawInputs.sleep_30d_avg != null ? `${Number(rawInputs.sleep_30d_avg).toFixed(1)}` : '—', unit: 'hrs', color: '#6366F1' },
-            { label: 'Avg Steps',value: rawInputs.steps_30d_avg != null ? `${(rawInputs.steps_30d_avg/1000).toFixed(1)}` : '—', unit: 'k', color: '#10B981' },
-            { label: 'Weight',   value: data.weight_kg != null ? `${data.weight_kg.toFixed(1)}` : '—', unit: 'kg', color: '#F59E0B' },
-            { label: 'Height',   value: rawInputs.height_cm != null ? `${rawInputs.height_cm}` : '—', unit: 'cm', color: '#22D3EE' },
+            { label: 'Avg HR', value: rawInputs.rhr_30d_avg != null ? `${Math.round(rawInputs.rhr_30d_avg)}` : '—', unit: 'bpm', color: '#F43F5E' },
+            { label: 'Avg HRV', value: rawInputs.hrv_30d_avg != null ? `${Math.round(rawInputs.hrv_30d_avg)}` : '—', unit: 'ms', color: '#A855F7' },
+            { label: 'Avg VO₂', value: rawInputs.vo2max_30d_avg != null ? `${Number(rawInputs.vo2max_30d_avg).toFixed(1)}` : rawInputs.vo2max_90d_ago != null ? `${Number(rawInputs.vo2max_90d_ago).toFixed(1)}` : '—', unit: 'ml/kg/min', color: '#3B82F6' },
+            { label: 'Avg Sleep', value: rawInputs.sleep_30d_avg != null ? `${Number(rawInputs.sleep_30d_avg).toFixed(1)}` : '—', unit: 'hrs', color: '#6366F1' },
+            { label: 'Avg Steps', value: rawInputs.steps_30d_avg != null ? `${(rawInputs.steps_30d_avg / 1000).toFixed(1)}` : '—', unit: 'k', color: '#10B981' },
+            { label: 'Weight', value: data.weight_kg != null ? `${data.weight_kg.toFixed(1)}` : '—', unit: 'kg', color: '#F59E0B' },
+            { label: 'Height', value: rawInputs.height_cm != null ? `${rawInputs.height_cm}` : '—', unit: 'cm', color: '#22D3EE' },
             { label: 'Body Fat', value: rawInputs.body_fat_pct != null ? `${rawInputs.body_fat_pct}` : '—', unit: '%', color: '#EC4899' },
-            { label: 'BMI',      value: data.bmi != null ? `${data.bmi.toFixed(1)}` : '—', unit: 'kg/m²', color: '#F43F5E' },
-            { label: 'Age',      value: rawInputs.age_years != null ? `${rawInputs.age_years}` : '—', unit: 'yrs', color: '#A855F7' },
-            { label: 'Sex',      value: rawInputs.sex_phys || '—', unit: '', color: '#3B82F6' },
+            { label: 'BMI', value: data.bmi != null ? `${data.bmi.toFixed(1)}` : '—', unit: 'kg/m²', color: '#F43F5E' },
+            { label: 'Age', value: rawInputs.age_years != null ? `${rawInputs.age_years}` : '—', unit: 'yrs', color: '#A855F7' },
+            { label: 'Sex', value: rawInputs.sex_phys || '—', unit: '', color: '#3B82F6' },
             { label: 'Workouts', value: rawInputs.workout_days_per_week != null ? `${rawInputs.workout_days_per_week}` : '—', unit: 'd/wk', color: '#10B981' },
-            { label: 'Diet',     value: rawInputs.diet_type || '—', unit: '', color: '#6366F1' },
+            { label: 'Diet', value: rawInputs.diet_type || '—', unit: '', color: '#6366F1' },
           ].map((item) => (
             <div key={item.label} style={{
               display: 'flex', flexDirection: 'column', gap: '0.4rem',
@@ -441,7 +436,7 @@ export default function Dashboard() {
               <AreaChart data={trendData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                 <XAxis dataKey="period" stroke="var(--text-muted)" tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} ticks={['90 Days Ago', '30 Days Ago', 'Last 7 Days', 'Today']} interval="preserveStartEnd" />
-                <YAxis stroke="var(--text-muted)" tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} tickFormatter={v => `${Math.round(v/1000)}k`} />
+                <YAxis stroke="var(--text-muted)" tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} tickFormatter={v => `${Math.round(v / 1000)}k`} />
                 <RechartsTooltip contentStyle={{ background: 'var(--bg-surface-elevated)', border: 'none', borderRadius: '8px' }} formatter={(v) => [`${v.toLocaleString()} steps`, 'Steps']} />
                 <Area type="monotone" dataKey="steps" name="Daily Steps" stroke="var(--accent-green)" fill="rgba(16,185,129,0.15)" strokeWidth={2} dot={false} activeDot={{ r: 7 }} />
               </AreaChart>
@@ -516,12 +511,12 @@ export default function Dashboard() {
       {/* 1. PERSONAL HEALTH INTELLIGENCE */}
       <div className="glass-card" style={{ padding: '3rem', marginBottom: '2rem', background: 'var(--gradient-card)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '2rem' }}>
-          
+
           <div style={{ flex: '1 1 500px' }}>
             <h2 style={{ fontSize: '2.5rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }} className="text-gradient">
               <Brain size={32} /> Your Personal Health Intelligence
             </h2>
-            
+
             <div style={{ fontSize: '1.1rem', color: 'var(--text-primary)', lineHeight: 1.8, marginBottom: '2rem' }}>
               <p style={{ marginBottom: '1rem' }}>
                 Your cardiovascular system is currently your strongest signal. Your resting heart rate has {(data.resting_hr_trend_per_week || 0) <= 0 ? "improved" : "stabilized"} over the last 90 days while your aerobic capacity remains strong. Your daily movement is also consistently high.
@@ -533,12 +528,12 @@ export default function Dashboard() {
                 Your focus for the next few weeks should therefore be maintaining your current training stimulus while protecting recovery.
               </p>
             </div>
-            
+
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginTop: '2rem', background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '12px' }}>
-              <div><span style={{color: 'var(--text-secondary)'}}>Overall trajectory:</span> <strong style={{color: 'var(--accent-green)'}}>Improving</strong></div>
-              <div><span style={{color: 'var(--text-secondary)'}}>Strongest system:</span> <strong style={{color: 'var(--accent-rose)'}}>Cardiovascular fitness</strong></div>
-              <div><span style={{color: 'var(--text-secondary)'}}>Opportunity:</span> <strong style={{color: 'var(--accent-purple)'}}>Recovery consistency</strong></div>
-              <div><span style={{color: 'var(--text-secondary)'}}>Emerging signal:</span> <strong style={{color: 'var(--accent-amber)'}}>HRV plateau detected</strong></div>
+              <div><span style={{ color: 'var(--text-secondary)' }}>Overall trajectory:</span> <strong style={{ color: 'var(--accent-green)' }}>Improving</strong></div>
+              <div><span style={{ color: 'var(--text-secondary)' }}>Strongest system:</span> <strong style={{ color: 'var(--accent-rose)' }}>Cardiovascular fitness</strong></div>
+              <div><span style={{ color: 'var(--text-secondary)' }}>Opportunity:</span> <strong style={{ color: 'var(--accent-purple)' }}>Recovery consistency</strong></div>
+              <div><span style={{ color: 'var(--text-secondary)' }}>Emerging signal:</span> <strong style={{ color: 'var(--accent-amber)' }}>HRV plateau detected</strong></div>
             </div>
           </div>
 
@@ -547,22 +542,22 @@ export default function Dashboard() {
             <h3 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <FastForward size={24} color="var(--accent-amber)" /> Your Action Plan
             </h3>
-            
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div style={{ background: 'rgba(245,158,11,0.1)', borderLeft: '4px solid var(--accent-amber)', padding: '1rem', borderRadius: '8px' }}>
                 <h4 style={{ margin: 0, color: 'var(--accent-amber)', fontSize: '1.1rem' }}>1. Protect {Math.max(7.5, data.sleep_duration_h || 7)}–8 hours of sleep</h4>
                 <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
-                  <strong>Why:</strong> Your HRV appears highly sensitive to sleep duration dips below 7 hours.<br/>
-                  <strong>Expected Benefit:</strong> Direct improvement in autonomic recovery markers.<br/>
+                  <strong>Why:</strong> Your HRV appears highly sensitive to sleep duration dips below 7 hours.<br />
+                  <strong>Expected Benefit:</strong> Direct improvement in autonomic recovery markers.<br />
                   <strong>Timeframe:</strong> Signal expected in 7–14 days.
                 </div>
               </div>
-              
+
               <div style={{ background: 'rgba(16,185,129,0.1)', borderLeft: '4px solid var(--accent-green)', padding: '1rem', borderRadius: '8px' }}>
                 <h4 style={{ margin: 0, color: 'var(--accent-green)', fontSize: '1.1rem' }}>2. Keep most aerobic training low intensity</h4>
                 <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
-                  <strong>Why:</strong> High zone 4/5 volume is blunting your parasympathetic rebound.<br/>
-                  <strong>Expected Benefit:</strong> Sustained VO2 Max without nervous system tax.<br/>
+                  <strong>Why:</strong> High zone 4/5 volume is blunting your parasympathetic rebound.<br />
+                  <strong>Expected Benefit:</strong> Sustained VO2 Max without nervous system tax.<br />
                   <strong>Timeframe:</strong> Signal expected in 3–4 weeks.
                 </div>
               </div>
@@ -578,7 +573,7 @@ export default function Dashboard() {
           <ActivitySquare /> How Your Systems Are Interacting
         </h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-          
+
           <div style={{ padding: '1.5rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
               <Dumbbell size={20} color="var(--accent-amber)" /> <span style={{ color: 'var(--text-secondary)' }}>→</span> <Heart size={20} color="var(--accent-rose)" />
@@ -606,7 +601,7 @@ export default function Dashboard() {
 
       {/* ADDITIONAL AI INTELLIGENCE BLOCKS */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem', marginBottom: '2rem' }}>
-        
+
         {/* 1. PERFORMANCE & RECOVERY BALANCE */}
         <div className="glass-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -622,7 +617,7 @@ export default function Dashboard() {
                 <div style={{ height: '100%', width: '82%', background: 'var(--accent-green)' }} />
               </div>
             </div>
-            
+
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                 <span style={{ color: 'var(--text-secondary)' }}>Recovery Capacity</span>
@@ -654,7 +649,7 @@ export default function Dashboard() {
             <Sliders /> What Changed Recently?
           </h3>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Comparing your Last 7 Days vs Previous 30 Days.</p>
-          
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem' }}>
               <div>
@@ -663,7 +658,7 @@ export default function Dashboard() {
               </div>
               <span style={{ color: 'var(--accent-green)', fontWeight: 'bold', fontSize: '0.9rem' }}>↑ Improving</span>
             </div>
-            
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem' }}>
               <div>
                 <div style={{ color: 'var(--text-primary)', fontWeight: 'bold' }}>HRV</div>
@@ -680,7 +675,7 @@ export default function Dashboard() {
               <span style={{ color: 'var(--text-muted)', fontWeight: 'bold', fontSize: '0.9rem' }}>→ Stable</span>
             </div>
           </div>
-          
+
           <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', fontSize: '0.95rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>
             <strong>2 important metrics improved</strong>, 1 remained stable, and 0 require monitoring. This indicates a robust adaptive phase.
           </div>
@@ -692,7 +687,7 @@ export default function Dashboard() {
             <ActivitySquare /> Personal Baseline Engine
           </h3>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Your current metrics measured strictly against your own 90-day historical averages.</p>
-          
+
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem', flex: 1 }}>
             <thead>
               <tr style={{ color: 'var(--text-muted)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
@@ -728,15 +723,15 @@ export default function Dashboard() {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(600px, 1fr))', gap: '2rem' }}>
-        
+
         {/* 1. HEART & CARDIO ANALYSIS */}
         <div className="glass-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', color: 'var(--accent-rose)' }}>
             <Heart /> Cardiovascular Fitness & Recovery
           </h3>
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, marginBottom: '2rem' }}>
-            Your Resting Heart Rate (RHR) is currently {data.resting_hr_bpm} bpm. Compared to your 90-day baseline, this indicates your heart is working 
-            {(data.resting_hr_trend_per_week || 0) <= 0 ? " more efficiently, adapting well to your training load." : " slightly harder, which could be a sign of incomplete recovery or increased physiological stress."} 
+            Your Resting Heart Rate (RHR) is currently {data.resting_hr_bpm} bpm. Compared to your 90-day baseline, this indicates your heart is working
+            {(data.resting_hr_trend_per_week || 0) <= 0 ? " more efficiently, adapting well to your training load." : " slightly harder, which could be a sign of incomplete recovery or increased physiological stress."}
             Your VO₂ Max is estimated at {baseVo2} mL/kg/min.
           </p>
           <div style={{ height: '250px', flex: 1, marginBottom: '1rem' }}>
@@ -750,20 +745,20 @@ export default function Dashboard() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
-          
+
           <details style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', cursor: 'pointer' }}>
             <summary style={{ color: 'var(--text-primary)', fontWeight: 'bold', outline: 'none' }}>✨ Explain my trend</summary>
             <div style={{ marginTop: '1rem', color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <div><strong style={{color:'var(--text-primary)'}}>What happened:</strong> Your RHR {(data.resting_hr_trend_per_week || 0) <= 0 ? 'decreased' : 'increased'} by {Math.abs(data.resting_hr_trend_per_week || 0).toFixed(1)} bpm per week.</div>
-              <div><strong style={{color:'var(--text-primary)'}}>Why it may have happened:</strong> Aerobic activity remained stable while sleep efficiency fluctuated.</div>
-              <div><strong style={{color:'var(--text-primary)'}}>What it means:</strong> This pattern is consistent with {(data.resting_hr_trend_per_week || 0) <= 0 ? 'improved cardiovascular efficiency.' : 'mild systemic fatigue.'}</div>
-              <div><strong style={{color:'var(--text-primary)'}}>What to watch:</strong> Watch for a corresponding dip in HRV if this trend continues.</div>
-              <div><strong style={{color:'var(--text-primary)'}}>Confidence:</strong> High (87 days of baseline data)</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>What happened:</strong> Your RHR {(data.resting_hr_trend_per_week || 0) <= 0 ? 'decreased' : 'increased'} by {Math.abs(data.resting_hr_trend_per_week || 0).toFixed(1)} bpm per week.</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>Why it may have happened:</strong> Aerobic activity remained stable while sleep efficiency fluctuated.</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>What it means:</strong> This pattern is consistent with {(data.resting_hr_trend_per_week || 0) <= 0 ? 'improved cardiovascular efficiency.' : 'mild systemic fatigue.'}</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>What to watch:</strong> Watch for a corresponding dip in HRV if this trend continues.</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>Confidence:</strong> High (87 days of baseline data)</div>
             </div>
           </details>
 
           <div style={{ marginTop: 'auto', padding: '1rem', background: 'rgba(244,63,94,0.1)', borderRadius: '8px' }}>
-            <strong>🔮 Forecast:</strong> Your resting heart rate is estimated to reach {Math.round(baseRhr + (rhrTrend * 12))} bpm in 12 weeks.<br/>
+            <strong>🔮 Forecast:</strong> Your resting heart rate is estimated to reach {Math.round(baseRhr + (rhrTrend * 12))} bpm in 12 weeks.<br />
             <strong>💡 Recommendation:</strong> {(data.resting_hr_trend_per_week || 0) <= 0 ? "Maintain your current aerobic volume to keep driving cardiovascular efficiency." : "We recommend adding 20 minutes of low-intensity steady state (LISS) cardio to reduce heart strain."}
           </div>
         </div>
@@ -774,8 +769,8 @@ export default function Dashboard() {
             <Activity /> Autonomic Nervous System
           </h3>
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, marginBottom: '2rem' }}>
-            Heart Rate Variability (HRV) is the gold standard for measuring nervous system stress. Your HRV is {data.hrv_rmssd_ms} ms. 
-            Coupled with your Perceived Stress Score of {data.perceived_stress_score}, your parasympathetic (rest-and-digest) system is 
+            Heart Rate Variability (HRV) is the gold standard for measuring nervous system stress. Your HRV is {data.hrv_rmssd_ms} ms.
+            Coupled with your Perceived Stress Score of {data.perceived_stress_score}, your parasympathetic (rest-and-digest) system is
             {data.hrv_rmssd_ms > 50 ? " highly active, indicating excellent readiness for intense strain." : " suppressed, indicating your body is caught in a sympathetic (fight-or-flight) dominant state."}
           </p>
           <div style={{ height: '250px', flex: 1, marginBottom: '1rem' }}>
@@ -793,16 +788,16 @@ export default function Dashboard() {
           <details style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', cursor: 'pointer' }}>
             <summary style={{ color: 'var(--text-primary)', fontWeight: 'bold', outline: 'none' }}>✨ Explain my trend</summary>
             <div style={{ marginTop: '1rem', color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <div><strong style={{color:'var(--text-primary)'}}>What happened:</strong> Your HRV has {(data.hrv_trend_per_week || 0) >= 0 ? 'risen' : 'fallen'} over the past 30 days.</div>
-              <div><strong style={{color:'var(--text-primary)'}}>Why it may have happened:</strong> Often correlates with changes in perceived stress or training intensity spikes.</div>
-              <div><strong style={{color:'var(--text-primary)'}}>What it means:</strong> Your autonomic nervous system is {(data.hrv_trend_per_week || 0) >= 0 ? 'recovering faster after exertion.' : 'struggling to clear systemic stress.'}</div>
-              <div><strong style={{color:'var(--text-primary)'}}>What to watch:</strong> Ensure this does not drop further, which would indicate non-functional overreaching.</div>
-              <div><strong style={{color:'var(--text-primary)'}}>Confidence:</strong> Moderate (Sensitive to acute daily stressors)</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>What happened:</strong> Your HRV has {(data.hrv_trend_per_week || 0) >= 0 ? 'risen' : 'fallen'} over the past 30 days.</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>Why it may have happened:</strong> Often correlates with changes in perceived stress or training intensity spikes.</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>What it means:</strong> Your autonomic nervous system is {(data.hrv_trend_per_week || 0) >= 0 ? 'recovering faster after exertion.' : 'struggling to clear systemic stress.'}</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>What to watch:</strong> Ensure this does not drop further, which would indicate non-functional overreaching.</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>Confidence:</strong> Moderate (Sensitive to acute daily stressors)</div>
             </div>
           </details>
 
           <div style={{ marginTop: 'auto', padding: '1rem', background: 'rgba(6,182,212,0.1)', borderRadius: '8px' }}>
-            <strong>🔮 Forecast:</strong> HRV is trending {(data.hrv_trend_per_week || 0) > 0 ? "upward" : "downward"}, predicting a baseline of {Math.round(data.hrv_rmssd_ms + ((data.hrv_trend_per_week || 0) * 12))} ms by next quarter.<br/>
+            <strong>🔮 Forecast:</strong> HRV is trending {(data.hrv_trend_per_week || 0) > 0 ? "upward" : "downward"}, predicting a baseline of {Math.round(data.hrv_rmssd_ms + ((data.hrv_trend_per_week || 0) * 12))} ms by next quarter.<br />
             <strong>💡 Recommendation:</strong> {(data.hrv_trend_per_week || 0) > 0 ? "Your stress-management routines are working perfectly." : "We recommend scheduling a strict deload week and incorporating daily meditation."}
           </div>
         </div>
@@ -813,8 +808,8 @@ export default function Dashboard() {
             <Moon /> Sleep Architecture & Breathing
           </h3>
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, marginBottom: '2rem' }}>
-            You are getting {data.sleep_duration_h} hours of sleep, but duration isn't everything. 
-            Your deep sleep (physical recovery) is at {data.deep_sleep_pct}%, and REM sleep (mental recovery) is at {data.rem_sleep_pct}%. 
+            You are getting {data.sleep_duration_h} hours of sleep, but duration isn't everything.
+            Your deep sleep (physical recovery) is at {data.deep_sleep_pct}%, and REM sleep (mental recovery) is at {data.rem_sleep_pct}%.
             With {data.breathing_disturbances_per_hr} breathing disturbances per hour, your airway stability during sleep is {data.breathing_disturbances_per_hr < 5 ? "normal and healthy." : "showing signs of potential apnea or restriction."}
           </p>
           <div style={{ height: '250px', display: 'flex', alignItems: 'center', flex: 1, marginBottom: '1rem' }}>
@@ -828,19 +823,19 @@ export default function Dashboard() {
               </PieChart>
             </ResponsiveContainer>
           </div>
-          
+
           <details style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', cursor: 'pointer' }}>
             <summary style={{ color: 'var(--text-primary)', fontWeight: 'bold', outline: 'none' }}>✨ Explain my trend</summary>
             <div style={{ marginTop: '1rem', color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <div><strong style={{color:'var(--text-primary)'}}>What happened:</strong> Deep sleep is {(data.deep_sleep_pct >= 15) ? 'tracking optimally.' : 'sub-optimal.'}</div>
-              <div><strong style={{color:'var(--text-primary)'}}>Why it may have happened:</strong> Highly dependent on late-day cortisol, light exposure, and alcohol intake.</div>
-              <div><strong style={{color:'var(--text-primary)'}}>What it means:</strong> {(data.deep_sleep_pct >= 15) ? 'You are successfully clearing cellular waste and releasing HGH at night.' : 'Your physical tissue repair is being truncated.'}</div>
-              <div><strong style={{color:'var(--text-primary)'}}>What to watch:</strong> Any corresponding spike in RHR indicating autonomic stress.</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>What happened:</strong> Deep sleep is {(data.deep_sleep_pct >= 15) ? 'tracking optimally.' : 'sub-optimal.'}</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>Why it may have happened:</strong> Highly dependent on late-day cortisol, light exposure, and alcohol intake.</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>What it means:</strong> {(data.deep_sleep_pct >= 15) ? 'You are successfully clearing cellular waste and releasing HGH at night.' : 'Your physical tissue repair is being truncated.'}</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>What to watch:</strong> Any corresponding spike in RHR indicating autonomic stress.</div>
             </div>
           </details>
 
           <div style={{ marginTop: 'auto', padding: '1rem', background: 'rgba(168,85,247,0.1)', borderRadius: '8px' }}>
-            <strong>🔮 Forecast:</strong> Your sleep consistency suggests your average duration will stabilize at {Math.max(4, Math.round((data.sleep_duration_h + ((data.sleep_trend_per_week || 0)*12))*10)/10)} hrs.<br/>
+            <strong>🔮 Forecast:</strong> Your sleep consistency suggests your average duration will stabilize at {Math.max(4, Math.round((data.sleep_duration_h + ((data.sleep_trend_per_week || 0) * 12)) * 10) / 10)} hrs.<br />
             <strong>💡 Recommendation:</strong> {data.deep_sleep_pct < 15 ? "Your deep sleep is critically low. Avoid eating within 3 hours of bedtime and reduce evening alcohol." : "Excellent sleep architecture. Protect your current sleep hygiene."}
           </div>
         </div>
@@ -851,8 +846,8 @@ export default function Dashboard() {
             <Dumbbell /> Training Zones & Load
           </h3>
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, marginBottom: '2rem' }}>
-            Your 7-day training load is {data.training_load_7d_avg ? data.training_load_7d_avg.toFixed(1) : 0}. 
-            Your training is distributed across aerobic (Zone 2) and anaerobic (Zone 4/5) intensities. 
+            Your 7-day training load is {data.training_load_7d_avg ? data.training_load_7d_avg.toFixed(1) : 0}.
+            Your training is distributed across aerobic (Zone 2) and anaerobic (Zone 4/5) intensities.
             {data.zone_low_min_per_week > data.zone_high_min_per_week ? " Your polarized training approach is excellent for building mitochondrial density without overtaxing the nervous system." : " You have a high ratio of high-intensity training, which may be blunting your HRV recovery."}
           </p>
           <div style={{ height: '250px', flex: 1, marginBottom: '1rem' }}>
@@ -868,19 +863,19 @@ export default function Dashboard() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-          
+
           <details style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', cursor: 'pointer' }}>
             <summary style={{ color: 'var(--text-primary)', fontWeight: 'bold', outline: 'none' }}>✨ Explain my trend</summary>
             <div style={{ marginTop: '1rem', color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <div><strong style={{color:'var(--text-primary)'}}>What happened:</strong> Your training volume is {(data.zone_low_min_per_week > data.zone_high_min_per_week) ? 'polarized.' : 'heavily skewed toward high intensity.'}</div>
-              <div><strong style={{color:'var(--text-primary)'}}>Why it may have happened:</strong> Typical of {(data.zone_low_min_per_week > data.zone_high_min_per_week) ? 'endurance block structuring.' : 'CrossFit or HIIT heavy programming.'}</div>
-              <div><strong style={{color:'var(--text-primary)'}}>What it means:</strong> {(data.zone_low_min_per_week > data.zone_high_min_per_week) ? 'Optimal for building mitochondrial density.' : 'May risk sympathetic overtraining if sustained.'}</div>
-              <div><strong style={{color:'var(--text-primary)'}}>What to watch:</strong> Elevated waking heart rates the day after Zone 4/5 sessions.</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>What happened:</strong> Your training volume is {(data.zone_low_min_per_week > data.zone_high_min_per_week) ? 'polarized.' : 'heavily skewed toward high intensity.'}</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>Why it may have happened:</strong> Typical of {(data.zone_low_min_per_week > data.zone_high_min_per_week) ? 'endurance block structuring.' : 'CrossFit or HIIT heavy programming.'}</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>What it means:</strong> {(data.zone_low_min_per_week > data.zone_high_min_per_week) ? 'Optimal for building mitochondrial density.' : 'May risk sympathetic overtraining if sustained.'}</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>What to watch:</strong> Elevated waking heart rates the day after Zone 4/5 sessions.</div>
             </div>
           </details>
 
           <div style={{ marginTop: 'auto', padding: '1rem', background: 'rgba(245,158,11,0.1)', borderRadius: '8px' }}>
-            <strong>🔮 Forecast:</strong> Current load puts you on track to {(vo2Trend > 0) ? "gain significant aerobic capacity" : "plateau or overtrain"} this month.<br/>
+            <strong>🔮 Forecast:</strong> Current load puts you on track to {(vo2Trend > 0) ? "gain significant aerobic capacity" : "plateau or overtrain"} this month.<br />
             <strong>💡 Recommendation:</strong> {data.zone_low_min_per_week < 150 ? "We strongly recommend adding at least 60 mins of Zone 2 cardio per week to build a stronger aerobic base." : "Keep up the polarized volume; your heart is responding perfectly."}
           </div>
         </div>
@@ -891,8 +886,8 @@ export default function Dashboard() {
             <ActivitySquare /> Daily Movement Profile
           </h3>
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, marginBottom: '2rem' }}>
-            You average {data.steps_per_day} steps per day, against {data.sedentary_hours_per_day} hours of sedentary time. 
-            The ratio of active minutes to sedentary time heavily dictates metabolic flexibility. 
+            You average {data.steps_per_day} steps per day, against {data.sedentary_hours_per_day} hours of sedentary time.
+            The ratio of active minutes to sedentary time heavily dictates metabolic flexibility.
             {data.steps_per_day > 8000 ? " You are effectively breaking up sedentary periods." : " Prolonged inactivity periods may be dampening your insulin sensitivity, despite your dedicated workout sessions."}
           </p>
           <div style={{ height: '250px', flex: 1, marginBottom: '1rem' }}>
@@ -906,19 +901,19 @@ export default function Dashboard() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
-          
+
           <details style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', cursor: 'pointer' }}>
             <summary style={{ color: 'var(--text-primary)', fontWeight: 'bold', outline: 'none' }}>✨ Explain my trend</summary>
             <div style={{ marginTop: '1rem', color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <div><strong style={{color:'var(--text-primary)'}}>What happened:</strong> Your step count is {(data.steps_trend_per_week || 0) >= 0 ? 'increasing' : 'decreasing'} by {Math.abs(data.steps_trend_per_week || 0).toFixed(0)} steps/week.</div>
-              <div><strong style={{color:'var(--text-primary)'}}>Why it may have happened:</strong> Changes in commuting, desk-time habits, or intentional walking.</div>
-              <div><strong style={{color:'var(--text-primary)'}}>What it means:</strong> {(data.steps_trend_per_week || 0) >= 0 ? 'Higher baseline caloric expenditure and metabolic health.' : 'Reduced NEAT leading to lower metabolic flexibility.'}</div>
-              <div><strong style={{color:'var(--text-primary)'}}>What to watch:</strong> Correlation between step count drops and increases in sedentary hours.</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>What happened:</strong> Your step count is {(data.steps_trend_per_week || 0) >= 0 ? 'increasing' : 'decreasing'} by {Math.abs(data.steps_trend_per_week || 0).toFixed(0)} steps/week.</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>Why it may have happened:</strong> Changes in commuting, desk-time habits, or intentional walking.</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>What it means:</strong> {(data.steps_trend_per_week || 0) >= 0 ? 'Higher baseline caloric expenditure and metabolic health.' : 'Reduced NEAT leading to lower metabolic flexibility.'}</div>
+              <div><strong style={{ color: 'var(--text-primary)' }}>What to watch:</strong> Correlation between step count drops and increases in sedentary hours.</div>
             </div>
           </details>
 
           <div style={{ marginTop: 'auto', padding: '1rem', background: 'rgba(16,185,129,0.1)', borderRadius: '8px' }}>
-            <strong>🔮 Forecast:</strong> You are pacing to average {Math.max(0, data.steps_per_day + ((data.steps_trend_per_week || 0) * 4))} steps/day next month.<br/>
+            <strong>🔮 Forecast:</strong> You are pacing to average {Math.max(0, data.steps_per_day + ((data.steps_trend_per_week || 0) * 4))} steps/day next month.<br />
             <strong>💡 Recommendation:</strong> {data.sedentary_hours_per_day > 8 ? `You have ${data.sedentary_hours_per_day} hours of sedentary time. Set an alarm to stand and walk for 2 minutes every hour.` : "Great Non-Exercise Activity Thermogenesis (NEAT)! This protects your metabolism."}
           </div>
         </div>
@@ -929,38 +924,38 @@ export default function Dashboard() {
             <Zap /> Metabolic Body Composition
           </h3>
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, marginBottom: '2rem' }}>
-            Your Body Mass Index (BMI) is {data.bmi?.toFixed(1) || 'N/A'}, and your Body Fat percentage is {data.body_fat_pct}%. 
-            {data.body_fat_pct < 15 
-              ? " This is firmly in the athletic range, minimizing visceral fat and dramatically reducing the risk of metabolic syndrome, insulin resistance, and systemic inflammation." 
-              : data.body_fat_pct < 25 
-              ? " This is a healthy baseline, maintaining normal endocrine function without excessive stress on your cardiovascular system." 
-              : " This level is associated with elevated systemic inflammation and increased resistance to insulin. Lowering this metric is highly recommended to improve long-term longevity."}
+            Your Body Mass Index (BMI) is {data.bmi?.toFixed(1) || 'N/A'}, and your Body Fat percentage is {data.body_fat_pct}%.
+            {data.body_fat_pct < 15
+              ? " This is firmly in the athletic range, minimizing visceral fat and dramatically reducing the risk of metabolic syndrome, insulin resistance, and systemic inflammation."
+              : data.body_fat_pct < 25
+                ? " This is a healthy baseline, maintaining normal endocrine function without excessive stress on your cardiovascular system."
+                : " This level is associated with elevated systemic inflammation and increased resistance to insulin. Lowering this metric is highly recommended to improve long-term longevity."}
           </p>
           <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px', flex: 1 }}>
-             <h4 style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '1rem' }}>Key Composition Metrics</h4>
-             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <div>
-                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Body Fat %</div>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: data.body_fat_pct < 20 ? 'var(--accent-green)' : 'var(--accent-amber)' }}>{data.body_fat_pct}%</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Target: {'< 20%'}</div>
-                </div>
-                <div>
-                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Waist Circumference</div>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{data.waist_circ_cm} cm</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Indicator of Visceral Fat</div>
-                </div>
-                <div>
-                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>BMI</div>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{data.bmi?.toFixed(1) || 'N/A'}</div>
-                </div>
-                <div>
-                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Diet Type</div>
-                  <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--accent-purple)', textTransform: 'capitalize', marginTop: '0.5rem' }}>{data.diet_type || 'Omnivore'}</div>
-                </div>
-             </div>
+            <h4 style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '1rem' }}>Key Composition Metrics</h4>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div>
+                <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Body Fat %</div>
+                <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: data.body_fat_pct < 20 ? 'var(--accent-green)' : 'var(--accent-amber)' }}>{data.body_fat_pct}%</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Target: {'< 20%'}</div>
+              </div>
+              <div>
+                <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Waist Circumference</div>
+                <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{data.waist_circ_cm} cm</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Indicator of Visceral Fat</div>
+              </div>
+              <div>
+                <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>BMI</div>
+                <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{data.bmi?.toFixed(1) || 'N/A'}</div>
+              </div>
+              <div>
+                <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Diet Type</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--accent-purple)', textTransform: 'capitalize', marginTop: '0.5rem' }}>{data.diet_type || 'Omnivore'}</div>
+              </div>
+            </div>
           </div>
           <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(245,158,11,0.1)', borderRadius: '8px' }}>
-            <strong>🔮 Forecast:</strong> Based on training load and age, your metabolic age is tracking {(baseVo2 > 40) ? "younger" : "older"} than your biological age.<br/>
+            <strong>🔮 Forecast:</strong> Based on training load and age, your metabolic age is tracking {(baseVo2 > 40) ? "younger" : "older"} than your biological age.<br />
             <strong>💡 Recommendation:</strong> {data.body_fat_pct > 25 ? "We recommend prioritizing resistance training (3x/week) to improve insulin sensitivity and partition nutrients into muscle." : "Body composition is optimal. Ensure adequate protein intake to maintain lean mass."}
           </div>
         </div>
@@ -971,7 +966,7 @@ export default function Dashboard() {
             <Wind /> Clinical Body Signals
           </h3>
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, marginBottom: '2rem' }}>
-            This section monitors passive clinical signals for early signs of illness or arrhythmia. 
+            This section monitors passive clinical signals for early signs of illness or arrhythmia.
             Skin temperature deviations often precede viral infections by 24 hours. Your skin temp is {Math.abs(data.skin_temp_c_trend_per_week || 0) > 0.5 ? "elevated, suggesting an immune response." : "stable at your personal baseline."}
           </p>
           <div style={{ flex: 1 }}>
@@ -1005,7 +1000,7 @@ export default function Dashboard() {
             </table>
           </div>
           <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '8px' }}>
-            <strong>🔮 Forecast:</strong> Your clinical metrics indicate {(data.spo2_pct < 95 || Math.abs(data.skin_temp_c_trend_per_week || 0) > 0.5) ? "a high probability of oncoming illness or overtraining." : "a zero-risk period for acute illness."}<br/>
+            <strong>🔮 Forecast:</strong> Your clinical metrics indicate {(data.spo2_pct < 95 || Math.abs(data.skin_temp_c_trend_per_week || 0) > 0.5) ? "a high probability of oncoming illness or overtraining." : "a zero-risk period for acute illness."}<br />
             <strong>💡 Recommendation:</strong> {(data.spo2_pct < 95 || Math.abs(data.skin_temp_c_trend_per_week || 0) > 0.5) ? "We recommend pausing intense physical activity and monitoring symptoms." : "Clear for high intensity output!"}
           </div>
         </div>
@@ -1018,14 +1013,14 @@ export default function Dashboard() {
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, marginBottom: '2rem' }}>
             The machine learning model scans your longitudinal data for subtle trend shifts that often precede noticeable physical symptoms, allowing for proactive intervention.
           </p>
-          
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1 }}>
-            
+
             <div style={{ background: 'rgba(245,158,11,0.05)', borderLeft: '3px solid var(--accent-amber)', padding: '1rem', borderRadius: '8px' }}>
               <div style={{ color: 'var(--text-primary)', fontWeight: 'bold', marginBottom: '0.25rem' }}>HRV Plateau Detected</div>
               <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.5 }}>
-                Your HRV has stopped climbing despite consistent sleep. This often indicates the body is fully habituated to the current training stimulus. 
-                <br/><strong style={{color:'var(--accent-amber)'}}>Intervention:</strong> Consider varying workout intensity.
+                Your HRV has stopped climbing despite consistent sleep. This often indicates the body is fully habituated to the current training stimulus.
+                <br /><strong style={{ color: 'var(--accent-amber)' }}>Intervention:</strong> Consider varying workout intensity.
               </div>
             </div>
 
@@ -1033,7 +1028,7 @@ export default function Dashboard() {
               <div style={{ color: 'var(--text-primary)', fontWeight: 'bold', marginBottom: '0.25rem' }}>Metabolic Shift</div>
               <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.5 }}>
                 Your daily step variance has tightened (more consistent NEAT). Historically, this pattern precedes improvements in your estimated body fat percentage by 2-3 weeks.
-                <br/><strong style={{color:'var(--accent-green)'}}>Forecast:</strong> Favorable composition change imminent.
+                <br /><strong style={{ color: 'var(--accent-green)' }}>Forecast:</strong> Favorable composition change imminent.
               </div>
             </div>
 
@@ -1050,7 +1045,7 @@ export default function Dashboard() {
 
       {/* READINESS & LONGEVITY BLOCKS */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem', marginBottom: '2rem' }}>
-        
+
         {/* 8. DAILY READINESS & STRAIN TARGET */}
         <div className="glass-card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', color: 'var(--accent-green)' }}>
@@ -1059,7 +1054,7 @@ export default function Dashboard() {
           <p style={{ color: 'var(--text-primary)', lineHeight: 1.6, marginBottom: '2rem' }}>
             Based on your overnight HRV ({data.hrv_rmssd_ms} ms) and sleep ({data.sleep_duration_h} hrs) relative to your personal 30-day baselines, here is your physiological readiness for today.
           </p>
-          
+
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1.5rem', justifyContent: 'center' }}>
             <div style={{ textAlign: 'center', padding: '2rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px' }}>
               <div style={{ fontSize: '1rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.5rem' }}>Readiness Score</div>
@@ -1074,11 +1069,11 @@ export default function Dashboard() {
             <div style={{ background: 'rgba(16,185,129,0.05)', borderLeft: '4px solid var(--accent-green)', padding: '1rem', borderRadius: '8px' }}>
               <strong style={{ display: 'block', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>🎯 Recommended Strain:</strong>
               <span style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.5 }}>
-                {data.hrv_rmssd_ms > 45 && data.sleep_duration_h >= 7 
-                  ? 'Your nervous system is highly recovered. This is an optimal day for a high-intensity interval session or heavy resistance training to drive adaptation.' 
-                  : (data.sleep_duration_h < 6 
-                      ? 'Your autonomic system is suppressed today. Limit activity to Zone 1/2 active recovery (walking, light cycling) to prevent non-functional overreaching.' 
-                      : 'You are sufficiently recovered for moderate, sustained aerobic efforts, but avoid maximal anaerobic strain today.')}
+                {data.hrv_rmssd_ms > 45 && data.sleep_duration_h >= 7
+                  ? 'Your nervous system is highly recovered. This is an optimal day for a high-intensity interval session or heavy resistance training to drive adaptation.'
+                  : (data.sleep_duration_h < 6
+                    ? 'Your autonomic system is suppressed today. Limit activity to Zone 1/2 active recovery (walking, light cycling) to prevent non-functional overreaching.'
+                    : 'You are sufficiently recovered for moderate, sustained aerobic efforts, but avoid maximal anaerobic strain today.')}
               </span>
             </div>
           </div>
@@ -1094,7 +1089,7 @@ export default function Dashboard() {
           </p>
 
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            
+
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.5rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px' }}>
               <div>
                 <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Estimated Metabolic Age</div>
@@ -1123,8 +1118,8 @@ export default function Dashboard() {
             <div style={{ background: 'rgba(6,182,212,0.1)', borderLeft: '4px solid var(--accent-cyan)', padding: '1rem', borderRadius: '8px', marginTop: 'auto' }}>
               <strong style={{ display: 'block', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>🔮 Longevity Insight:</strong>
               <span style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.5 }}>
-                {baseVo2 >= 40 
-                  ? 'Your VO2 Max is a profound protector of longevity. Maintaining this level creates a massive buffer against age-related decline in physical capacity.' 
+                {baseVo2 >= 40
+                  ? 'Your VO2 Max is a profound protector of longevity. Maintaining this level creates a massive buffer against age-related decline in physical capacity.'
                   : 'Increasing your VO2 Max by just 3 points could theoretically reduce all-cause mortality risk by ~10% over the next decade.'}
               </span>
             </div>
@@ -1137,14 +1132,14 @@ export default function Dashboard() {
       <h3 style={{ marginBottom: '1.5rem', marginTop: '4rem', fontSize: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         <FastForward className="text-purple" /> Trajectory & Habit Forecasting
       </h3>
-      
+
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '3rem' }}>
-        
+
         {/* Trajectory Graph */}
         <div className="glass-card" style={{ padding: '2rem' }}>
           <h4 style={{ color: 'var(--accent-purple)', marginBottom: '1.5rem', fontSize: '1.2rem' }}>12-Week Physiological Projection</h4>
           <p style={{ color: 'var(--text-primary)', marginBottom: '2rem', lineHeight: 1.6 }}>
-            Extrapolating your current 90-day momentum, this model predicts your future cardiovascular engine (VO2 Max) and autonomic baseline (Resting HR) assuming habits remain unchanged. 
+            Extrapolating your current 90-day momentum, this model predicts your future cardiovascular engine (VO2 Max) and autonomic baseline (Resting HR) assuming habits remain unchanged.
             Consistently poor trends here correlate strongly with long-term all-cause mortality risk.
           </p>
           <div style={{ height: '250px' }}>
@@ -1197,30 +1192,30 @@ export default function Dashboard() {
               <input type="range" min="-10" max="10" step="1" value={mods.perceived_stress_score} onChange={(e) => handleModChange('perceived_stress_score', e.target.value)} style={{ width: '100%', accentColor: 'var(--accent-amber)' }} />
             </div>
           </div>
-          
+
           {scenarioData ? (
             <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(245,158,11,0.05)', borderRadius: '8px', border: '1px solid rgba(245,158,11,0.2)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                 <strong style={{ color: 'var(--text-secondary)' }}>CURRENT PATH</strong>
                 <strong style={{ color: 'var(--accent-amber)' }}>VS. SIMULATED PATH</strong>
               </div>
-              
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.75rem', fontSize: '0.95rem', marginBottom: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Cardiovascular Capacity:</span>
-                  <span style={{fontWeight: 'bold', color: scenarioData.deltas.target_cardiovascular >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)'}}>
+                  <span style={{ fontWeight: 'bold', color: scenarioData.deltas.target_cardiovascular >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)' }}>
                     {scenarioData.deltas.target_cardiovascular > 0 ? '↑ Improving' : scenarioData.deltas.target_cardiovascular < 0 ? '↓ Declining' : '→ Stable'}
                   </span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Autonomic Recovery (HRV):</span>
-                  <span style={{fontWeight: 'bold', color: scenarioData.deltas.target_recovery >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)'}}>
+                  <span style={{ fontWeight: 'bold', color: scenarioData.deltas.target_recovery >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)' }}>
                     {scenarioData.deltas.target_recovery > 0 ? '↑ Improving' : scenarioData.deltas.target_recovery < 0 ? '↓ Declining' : '→ Stable'}
                   </span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Metabolic Flexibility:</span>
-                  <span style={{fontWeight: 'bold', color: scenarioData.deltas.target_metabolic >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)'}}>
+                  <span style={{ fontWeight: 'bold', color: scenarioData.deltas.target_metabolic >= 0 ? 'var(--accent-green)' : 'var(--accent-rose)' }}>
                     {scenarioData.deltas.target_metabolic > 0 ? '↑ Improving' : scenarioData.deltas.target_metabolic < 0 ? '↓ Declining' : '→ Stable'}
                   </span>
                 </div>
@@ -1231,9 +1226,9 @@ export default function Dashboard() {
               </p>
             </div>
           ) : (
-             <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', textAlign: 'center', color: 'var(--text-muted)' }}>
-               Adjust the sliders to simulate a habit change and view projected path deviations.
-             </div>
+            <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', textAlign: 'center', color: 'var(--text-muted)' }}>
+              Adjust the sliders to simulate a habit change and view projected path deviations.
+            </div>
           )}
         </div>
       </div>
