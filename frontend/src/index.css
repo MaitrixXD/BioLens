@@ -33,6 +33,47 @@
   
   --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   --border-glass: 1px solid rgba(255, 255, 255, 0.05);
+
+  --card-bg-solid: rgba(255, 255, 255, 0.04);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --pill-bg: rgba(255, 255, 255, 0.02);
+  --pill-border: rgba(255, 255, 255, 0.06);
+  --subtle-bg: rgba(0, 0, 0, 0.2);
+  --input-bg: rgba(15, 23, 42, 0.6);
+  --nav-border: rgba(255, 255, 255, 0.05);
+  --modal-bg: #1a1a2e;
+}
+
+[data-theme="light"] {
+  --bg-base: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-surface-elevated: #F1F5F9;
+  
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  
+  --accent-cyan: #0284C7;
+  --accent-blue: #2563EB;
+  --accent-purple: #7C3AED;
+  --accent-green: #059669;
+  --accent-rose: #E11D48;
+  --accent-amber: #D97706;
+  
+  --gradient-brand: linear-gradient(135deg, #0284C7, #2563EB);
+  --gradient-card: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.85) 100%);
+  
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+  --border-glass: 1px solid rgba(0, 0, 0, 0.08);
+
+  --card-bg-solid: #FFFFFF;
+  --card-border: rgba(0, 0, 0, 0.1);
+  --pill-bg: rgba(241, 245, 249, 0.9);
+  --pill-border: rgba(0, 0, 0, 0.08);
+  --subtle-bg: rgba(241, 245, 249, 0.95);
+  --input-bg: #FFFFFF;
+  --nav-border: rgba(0, 0, 0, 0.08);
+  --modal-bg: #FFFFFF;
 }
 
 * {
@@ -86,8 +127,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Form Elements */
 .input-field {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--input-bg);
+  border: 1px solid var(--pill-border);
   color: var(--text-primary);
   border-radius: var(--radius-sm);
   padding: 0.75rem 1rem;
@@ -150,4 +191,60 @@ h1, h2, h3, h4, h5, h6 {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
+}
+
+/* ── Print / Save as PDF styles ─────────────────────────────────── */
+@media print {
+  /* Hide everything that shouldn't appear in the PDF */
+  nav,
+  .no-print,
+  button,
+  input[type="range"],
+  input[type="number"],
+  input[type="text"],
+  select {
+    display: none !important;
+  }
+
+  /* White background so the PDF isn't pitch black */
+  body,
+  .app-container,
+  main {
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  /* Make glass cards print cleanly */
+  .glass-card {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Ensure charts don't get clipped across pages */
+  .recharts-wrapper,
+  .recharts-responsive-container {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Utility class to prevent breaks */
+  .print-avoid-break {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Full width for print */
+  #dashboard-export-root {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  /* Page margins */
+  @page {
+    margin: 15mm 12mm;
+    size: A4 portrait;
+  }
 }

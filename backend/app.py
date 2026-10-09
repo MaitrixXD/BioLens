@@ -16,7 +16,9 @@ from backend.config import MODEL_DIR, TARGET_COLUMNS, ARCHETYPE_LABELS
 from backend.features import compute_all_features
 from backend.scenario import apply_scenario
 from backend.explain import generate_insights
-from backend.auth import init_db, register_user, login_user, verify_token
+from backend.auth import (init_db, register_user, login_user, verify_token,
+                          save_profile, get_profiles, get_profile_by_id,
+                          delete_profile, update_profile_name, update_profile_full)
 
 app = Flask(__name__)
 CORS(app)
@@ -200,6 +202,135 @@ def scenario():
 def health():
     return jsonify({"status": "healthy", "models_loaded": bool(MODELS)})
 
+
+# ──────────────── PROFILE REPORT ROUTES ────────────────
+
+@app.route('/api/profiles/save', methods=['POST'])
+def save_profile_route():
+    """Save a completed dashboard report to MySQL."""
+    try:
+        body = request.get_json() or {}
+        profile_name = body.get('profile_name', '').strip()
+        if not profile_name:
+            return jsonify({'error': 'profile_name is required'}), 400
+
+        profile_id, is_duplicate = save_profile(
+            profile_name=profile_name,
+            archetype=body.get('archetype', {}),
+            computed_features=body.get('computed_features', {}),
+            insights=body.get('insights', {}),
+            scores=body.get('scores', {}),
+            raw_inputs=body.get('raw_inputs', {}),
+        )
+        return jsonify({'status': 'saved', 'id': profile_id, 'duplicate': is_duplicate}), 201
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'trace': traceback.format_exc()}), 500
+
+
+@app.route('/api/profiles', methods=['GET'])
+def list_profiles():
+    """Return the top-10 most recent profiles (summary cards only)."""
+    try:
+        profiles = get_profiles(limit=10)
+        return jsonify({'profiles': profiles})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/profiles/<int:profile_id>', methods=['GET'])
+def get_profile(profile_id):
+    """Return full profile data for re-rendering the dashboard."""
+    try:
+        profile = get_profile_by_id(profile_id)
+        if not profile:
+            return jsonify({'error': 'Profile not found'}), 404
+        return jsonify(profile)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/profiles/<int:profile_id>', methods=['DELETE'])
+def delete_profile_route(profile_id):
+    """Permanently delete a profile from MySQL."""
+    try:
+        deleted = delete_profile(profile_id)
+        if not deleted:
+            return jsonify({'error': 'Profile not found'}), 404
+        return jsonify({'status': 'deleted', 'id': profile_id}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/profiles/<int:profile_id>/name', methods=['PATCH'])
+def update_profile_name_route(profile_id):
+    """Update only the profile name — no re-prediction needed."""
+    try:
+        body = request.get_json() or {}
+        new_name = body.get('profile_name', '').strip()
+        if not new_name:
+            return jsonify({'error': 'profile_name is required'}), 400
+        updated = update_profile_name(profile_id, new_name)
+        if not updated:
+            return jsonify({'error': 'Profile not found'}), 404
+        return jsonify({'status': 'updated', 'id': profile_id, 'profile_name': new_name}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/profiles/<int:profile_id>/values', methods=['PUT'])
+def update_profile_values_route(profile_id):
+    """Re-run prediction with new inputs, then overwrite the existing row."""
+    try:
+        body = request.get_json() or {}
+        profile_name = body.get('profile_name', '').strip()
+        raw_inputs   = body.get('raw_inputs', {})
+        if not profile_name or not raw_inputs:
+            return jsonify({'error': 'profile_name and raw_inputs are required'}), 400
+
+        # Re-run the full ML pipeline with the new inputs
+        computed_features = compute_all_features(raw_inputs)
+        X = prepare_inference_vector(computed_features)
+
+        scores = {}
+        for target in TARGET_COLUMNS:
+            pred = float(MODELS['xgb'][target].predict(X)[0])
+            scores[target] = max(0.0, min(100.0, pred))
+
+        shap_vals = {}
+        for target in TARGET_COLUMNS:
+            shap_vals[target] = MODELS['explainers'][target].shap_values(X)
+
+        insights = generate_insights(shap_vals, MODELS['meta']['features'], computed_features, scores)
+
+        X_scaled = MODELS['scaler'].transform(X)
+        cluster_id = int(MODELS['kmeans'].predict(X_scaled)[0])
+        archetype = ARCHETYPE_LABELS.get(cluster_id, {'name': 'Unknown', 'description': ''})
+
+        updated = update_profile_full(
+            profile_id=profile_id,
+            profile_name=profile_name,
+            archetype=archetype,
+            computed_features=computed_features,
+            insights=insights,
+            scores=scores,
+            raw_inputs=raw_inputs,
+        )
+        if not updated:
+            return jsonify({'error': 'Profile not found'}), 404
+
+        return jsonify({
+            'status': 'updated',
+            'id': profile_id,
+            'scores': scores,
+            'insights': insights,
+            'archetype': archetype,
+            'computed_features': computed_features,
+        }), 200
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'trace': traceback.format_exc()}), 500
+
 # ──────────────── AUTH ROUTES ────────────────
 
 @app.route('/api/auth/register', methods=['POST'])
@@ -245,6 +376,107 @@ def me():
         return jsonify({'id': payload['sub'], 'name': payload['name'], 'email': payload['email']})
     except Exception:
         return jsonify({'error': 'Token expired or invalid.'}), 401
+
+
+@app.route('/api/test-dataset', methods=['POST'])
+def test_dataset():
+    """
+    Accept a CSV upload, run the ML pipeline on each row, and return per-row
+    predictions vs ground-truth targets along with accuracy metrics (MAE, R²).
+    """
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file uploaded. Send a CSV as multipart/form-data with key "file".'}), 400
+
+        file = request.files['file']
+        if not file.filename.endswith('.csv'):
+            return jsonify({'error': 'Only CSV files are supported.'}), 400
+
+        df = pd.read_csv(file)
+
+        # Rename dataset column aliases to canonical names expected by compute_all_features
+        from backend.config import COLUMN_RENAME_MAP
+        df_renamed = df.rename(columns=COLUMN_RENAME_MAP)
+
+        results = []
+        errors = []
+
+        for idx, row in df_renamed.iterrows():
+            row_dict = row.to_dict()
+            try:
+                # Extract ground-truth targets if present
+                ground_truth = {}
+                for t in TARGET_COLUMNS:
+                    if t in row_dict and not pd.isna(row_dict.get(t)):
+                        ground_truth[t] = float(row_dict[t])
+
+                # Strip target columns from input so they don't leak
+                input_dict = {k: v for k, v in row_dict.items() if k not in TARGET_COLUMNS}
+
+                # Compute features + run inference
+                computed = compute_all_features(input_dict)
+                X = prepare_inference_vector(computed)
+
+                predicted = {}
+                for target in TARGET_COLUMNS:
+                    pred = float(MODELS['xgb'][target].predict(X)[0])
+                    predicted[target] = round(max(0.0, min(100.0, pred)), 2)
+
+                # Per-row absolute error for each target
+                per_target_error = {}
+                for t in TARGET_COLUMNS:
+                    if t in ground_truth:
+                        per_target_error[t] = round(abs(predicted[t] - ground_truth[t]), 2)
+
+                results.append({
+                    'row': int(idx) + 1,
+                    'predicted': predicted,
+                    'ground_truth': ground_truth if ground_truth else None,
+                    'error': per_target_error if per_target_error else None,
+                    'status': 'ok',
+                })
+            except Exception as row_err:
+                errors.append({'row': int(idx) + 1, 'message': str(row_err)})
+                results.append({'row': int(idx) + 1, 'status': 'error', 'message': str(row_err)})
+
+        # ── Aggregate accuracy metrics (only when ground truth is available) ──
+        accuracy_metrics = {}
+        has_gt = any(r.get('ground_truth') for r in results if r.get('status') == 'ok')
+        if has_gt:
+            for t in TARGET_COLUMNS:
+                preds = []
+                actuals = []
+                for r in results:
+                    if r.get('status') == 'ok' and r.get('ground_truth') and t in r['ground_truth']:
+                        preds.append(r['predicted'][t])
+                        actuals.append(r['ground_truth'][t])
+                if preds:
+                    preds_arr = np.array(preds)
+                    actuals_arr = np.array(actuals)
+                    mae = float(np.mean(np.abs(preds_arr - actuals_arr)))
+                    ss_res = float(np.sum((actuals_arr - preds_arr) ** 2))
+                    ss_tot = float(np.sum((actuals_arr - np.mean(actuals_arr)) ** 2))
+                    r2 = round(1 - ss_res / ss_tot, 4) if ss_tot > 0 else 1.0
+                    accuracy_metrics[t] = {
+                        'mae': round(mae, 3),
+                        'r2': r2,
+                        'n': len(preds),
+                        'accuracy_pct': round(max(0.0, r2) * 100, 2),
+                    }
+
+        return jsonify({
+            'status': 'success',
+            'total_rows': len(df),
+            'processed': len([r for r in results if r.get('status') == 'ok']),
+            'failed': len(errors),
+            'has_ground_truth': has_gt,
+            'accuracy_metrics': accuracy_metrics,
+            'results': results,
+        })
+
+    except Exception as e:
+        import traceback
+        return jsonify({'error': str(e), 'trace': traceback.format_exc()}), 500
 
 
 if __name__ == '__main__':

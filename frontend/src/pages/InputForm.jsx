@@ -6,6 +6,7 @@ export default function InputForm() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [profileName, setProfileName] = useState('');
 
   // All 38 manual inputs defined in the project plan
   const [formData, setFormData] = useState({
@@ -60,7 +61,7 @@ export default function InputForm() {
     setError(null);
     try {
       const res = await axios.post('http://localhost:5001/api/predict', formData);
-      navigate('/dashboard', { state: { predictionData: res.data } });
+      navigate('/dashboard', { state: { predictionData: res.data, profileName, rawInputs: formData } });
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.trace || err.message || 'Failed to connect to API. Is Flask running?');
@@ -96,6 +97,23 @@ export default function InputForm() {
         )}
 
         <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '3rem' }}>
+          {/* Profile Name */}
+          <div style={{ padding: '1.5rem', background: 'rgba(34,211,238,0.06)', border: '1px solid rgba(34,211,238,0.2)', borderRadius: '12px' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--accent-cyan)', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+              Profile Name *
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. Maitrayee – Oct 2026"
+              value={profileName}
+              onChange={e => setProfileName(e.target.value)}
+              required
+              className="input-field"
+              style={{ fontSize: '1.1rem', padding: '0.75rem 1rem', width: '100%', boxSizing: 'border-box' }}
+            />
+            <p style={{ margin: '0.4rem 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>This name identifies this report in View Reports.</p>
+          </div>
+
           {groups.map(group => (
             <div key={group.title}>
               <h3 style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem', marginBottom: '1.5rem', color: 'var(--accent-cyan)' }}>
